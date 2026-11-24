@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client Zéro · Espace formation FLAASH</title>
+<meta name="description" content="Client Zéro, l'agent IA d'entraînement à la vente des nouveaux vendeurs de FLAASH Sneakers (projet étudiant, entreprise fictive).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: une boutique de sneakers qui forme ses vendeurs, énergique mais claire
+   IDEA: l'étiquette de boîte à chaussures et le comptoir de boutique
+   PICTURE: une basket dessinée en aplats, puis le chat lui-même comme objet central
+   COLOUR and TYPE: prune profond (le modèle Pruneau), blanc, accent citron ; Archivo + Inter
+   LAYOUT: bandeau prune, chat en grand au centre, scénarios en étiquettes, pied de page sobre */
+:root{
+  --prune:#4b1a3c; --prune-2:#6e2a58; --lime:#d4f25a; --ink:#1d1420; --muted:#6b5f6a;
+  --bg:#ffffff; --soft:#f5f1f4; --line:#e6dde3; --radius:14px;
+}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Archivo,Inter,sans-serif;line-height:1.08;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:800}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 max(4vw,16px)}
+.band{padding:clamp(40px,6vw,88px) 0}
+
+/* En-tête */
+header{position:sticky;top:0;z-index:20;background:var(--prune);color:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-family:Archivo,sans-serif;font-weight:800;font-size:20px;text-decoration:none}
+.logo span{background:var(--lime);color:var(--prune);border-radius:6px;padding:2px 7px;font-size:13px;font-weight:600;font-family:Inter,sans-serif}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a{text-decoration:none;font-size:15px;padding:10px 12px;border-radius:10px;opacity:.9}
+nav a:hover,nav a:focus-visible{background:rgba(255,255,255,.12);opacity:1;outline:none}
+
+/* Héros */
+.hero{background:var(--prune);color:#fff;padding:clamp(36px,6vw,80px) 0 clamp(48px,7vw,96px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(24px,4vw,56px);align-items:center}
+.hero p.lead{font-size:clamp(17px,1.6vw,19px);opacity:.92;margin-top:18px;max-width:34em}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;font:600 16px Inter,sans-serif;border:2px solid transparent;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+.btn-lime{background:var(--lime);color:var(--prune)}
+.btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+.btn-prune{background:var(--prune);color:#fff}
+.btn:hover{transform:translateY(-1px)}
+.facts{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px}
+.facts b{display:block;font-family:Archivo,sans-serif;font-size:28px;color:var(--lime)}
+.facts small{font-size:14px;opacity:.85}
+.shoe{width:100%;height:auto;display:block}
+
+/* Zone d'entraînement */
+.train{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start;margin-top:28px}
+.chatbox{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff;box-shadow:0 18px 40px -24px rgba(75,26,60,.45)}
+.chatbar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--soft);border-bottom:1px solid var(--line);font-size:14px;color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;background:#2fb36d;flex:none}
+#webchat{height:clamp(520px,70vh,680px);position:relative}
+#webchat .fallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:24px;color:var(--muted);gap:14px}
+.side{display:grid;gap:18px}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:#fff}
+.card h3{margin-bottom:10px}
+.steps{margin:0;padding-left:20px;display:grid;gap:8px}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:999px;padding:10px 14px;font:500 14px Inter,sans-serif;cursor:pointer;min-height:44px}
+.chip:hover,.chip:focus-visible{border-color:var(--prune-2);outline:none}
+label{font-size:14px;font-weight:600;display:block;margin:12px 0 6px}
+input[type=email]{width:100%;min-height:46px;font:16px Inter,sans-serif;padding:0 14px;border:1px solid var(--line);border-radius:10px}
+input[type=email]:focus-visible{outline:3px solid var(--lime);border-color:var(--prune-2)}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+.status{font-size:14px;margin-top:10px;min-height:1.4em}
+.mail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mail-actions .btn{min-height:44px;padding:0 16px;font-size:15px}
+.btn-line{background:#fff;color:var(--prune);border-color:var(--line)}
+
+/* Scénarios : étiquettes de boîte */
+.grid6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.tag{position:relative;border:1.5px solid var(--prune);border-radius:var(--radius);padding:20px 20px 18px;background:#fff;display:grid;gap:8px}
+.tag .code{font-family:Archivo,sans-serif;font-weight:800;color:var(--prune);font-size:15px}
+.tag .lvl{position:absolute;top:16px;right:16px;font-size:13px;background:var(--soft);border-radius:999px;padding:3px 10px;color:var(--prune)}
+.tag p{color:var(--muted);font-size:15px}
+.tag button{justify-self:start;margin-top:6px}
+
+/* Méthode */
+.soft{background:var(--soft)}
+.method{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:28px;counter-reset:s}
+.method li{list-style:none;background:#fff;border-radius:var(--radius);padding:18px 16px;border:1px solid var(--line)}
+.method li::before{counter-increment:s;content:counter(s);display:grid;place-content:center;width:34px;height:34px;border-radius:50%;background:var(--prune);color:#fff;font:800 16px Archivo,sans-serif;margin-bottom:10px}
+.method b{display:block;margin-bottom:4px}
+.method span{font-size:14px;color:var(--muted)}
+.method{padding:0}
+
+/* Confidentialité */
+.trust{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:28px}
+.trust div{border-top:4px solid var(--lime);background:#fff;border-radius:0 0 var(--radius) var(--radius);padding:18px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trust b{display:block;font-family:Archivo,sans-serif;margin-bottom:6px;font-size:17px}
+.trust span{font-size:14px;color:var(--muted)}
+
+footer{background:var(--ink);color:#e9e2e7;padding:36px 0;font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--lime)}
+
+@media(max-width:980px){
+  .method{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .trust{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .train{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:720px){
+  .hero .wrap{grid-template-columns:minmax(0,1fr)}
+  .hero svg{max-width:420px;margin:0 auto}
+  .grid6{grid-template-columns:minmax(0,1fr)}
+  nav a{padding:8px 10px;font-size:14px}
+}
+@media(max-width:480px){
+  .method,.trust{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top">FLAASH <span>Espace formation</span></a>
+    <nav aria-label="Navigation principale">
+      <a href="#entrainement">S'entraîner</a>
+      <a href="#scenarios">Scénarios</a>
+      <a href="#methode">Méthode</a>
+      <a href="#confidentialite">Confidentialité</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <h1>Entraîne-toi avant le vrai client.</h1>
+      <p class="lead">Client Zéro joue des clients difficiles. Tu réponds comme en boutique, et à la fin tu reçois un retour privé, basé sur la méthode de vente et les fiches produits FLAASH, avec les sources.</p>
+      <div class="cta">
+        <a class="btn btn-lime" href="#entrainement">Commencer une séance</a>
+        <a class="btn btn-ghost" href="#scenarios">Voir les 6 scénarios</a>
+      </div>
+      <div class="facts">
+        <div><b>10 min</b><small>par séance</small></div>
+        <div><b>6</b><small>profils de clients</small></div>
+        <div><b>0</b><small>note transmise au manager</small></div>
+      </div>
+    </div>
+    <svg class="shoe" viewBox="0 0 520 360" role="img" aria-label="Illustration d'une basket FLAASH">
+      <ellipse cx="270" cy="318" rx="215" ry="18" fill="#2c0f23" opacity=".55"/>
+      <path d="M58 250 C60 205 92 178 140 170 L232 156 C262 120 300 88 352 82 C380 79 396 96 402 118 L420 182 C460 192 486 214 488 246 L488 268 C488 284 476 292 460 292 L84 292 C66 292 56 280 58 262 Z" fill="#d4f25a"/>
+      <path d="M58 262 L488 262 L488 270 C488 284 476 292 460 292 L84 292 C66 292 56 280 58 270 Z" fill="#ffffff"/>
+      <path d="M58 278 L488 278" stroke="#4b1a3c" stroke-width="4" opacity=".25"/>
+      <path d="M232 156 C262 120 300 88 352 82 C380 79 396 96 402 118 L420 182 C380 176 330 182 290 196 Z" fill="#6e2a58"/>
+      <path d="M140 170 L232 156 L290 196 C240 214 190 226 120 228 C110 210 118 182 140 170 Z" fill="#ffffff" opacity=".9"/>
+      <g stroke="#4b1a3c" stroke-width="6" stroke-linecap="round">
+        <path d="M262 132 L300 150"/><path d="M280 116 L318 136"/><path d="M300 102 L336 124"/>
+      </g>
+      <path d="M160 236 C220 228 300 210 360 196" stroke="#4b1a3c" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+      <circle cx="432" cy="236" r="10" fill="#4b1a3c"/>
+      <text x="96" y="70" fill="#d4f25a" font-family="Archivo, sans-serif" font-weight="800" font-size="34">« C'est trop cher. »</text>
+      <text x="96" y="104" fill="#ffffff" font-family="Inter, sans-serif" font-size="17" opacity=".85">À toi de répondre.</text>
+    </svg>
+  </div>
+</section>
+
+<section class="band" id="entrainement">
+  <div class="wrap">
+    <h2>Ta séance d'entraînement</h2>
+    <p class="note" style="font-size:16px;margin-top:8px">Écris ton prénom et le scénario que tu veux faire. Écris « FIN » pour arrêter et recevoir ton retour.</p>
+    <div class="train">
+      <div class="chatbox">
+        <div class="chatbar"><span class="dot" aria-hidden="true"></span>Client Zéro · intelligence artificielle, clients fictifs</div>
+        <div id="webchat">
+          <div class="fallback" id="fallback">
+            <p>Chargement de Client Zéro…</p>
+            <p><a class="btn btn-prune" href="https://cdn.botpress.cloud/webchat/v3.7/shareable.html?configUrl=https://files.bpcontent.cloud/2026/11/16/14/20261116142125-BSUMIJS1.json" target="_blank" rel="noopener">Ouvrir le chat dans un nouvel onglet</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h3>Démarrer en un clic</h3>
+          <p class="note" style="margin-top:0">Choisis un scénario : le message est envoyé dans le chat.</p>
+          <div class="quick" id="quick"></div>
+        </div>
+        <div class="card">
+          <h3>Recevoir mon retour par mail</h3>
+          <p class="note" style="margin-top:0">Après le retour de Client Zéro, garde-le : ton logiciel de mail s'ouvre avec le retour déjà écrit, tu n'as plus qu'à l'envoyer.</p>
+          <label for="mail">Ton adresse mail (pro de préférence)</label>
+          <input type="email" id="mail" autocomplete="email" placeholder="prenom.nom@flaash-sneakers.fr">
+          <div class="mail-actions">
+            <button class="btn btn-prune" id="sendMail" type="button">Préparer le mail</button>
+            <button class="btn btn-line" id="copy" type="button">Copier le retour</button>
+          </div>
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+          <p class="note">Ton adresse n'est ni enregistrée ni transmise : elle reste sur ton appareil. Le retour n'est envoyé qu'à toi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band soft" id="scenarios">
+  <div class="wrap">
+    <h2>6 clients, du plus simple au plus difficile</h2>
+    <div class="grid6" id="grid6"></div>
+  </div>
+</section>
+
+<section class="band" id="methode">
+  <div class="wrap">
+    <h2>La méthode de vente FLAASH</h2>
+    <p class="note" style="font-size:16px;margin-top:8px">Chaque retour de Client Zéro est relié à ces 6 étapes.</p>
+    <ol class="method" id="method"></ol>
+  </div>
+</section>
+
+<section class="band soft" id="confidentialite">
+  <div class="wrap">
+    <h2>Un outil pour apprendre, pas pour juger</h2>
+    <div class="trust">
+      <div><b>C'est une IA</b><span>Client Zéro le dit au début de chaque conversation. Les clients qu'il joue sont fictifs.</span></div>
+      <div><b>Ton retour est privé</b><span>Aucune note, aucun classement. La responsable ne voit que des statistiques d'équipe.</span></div>
+      <div><b>Pas d'émotions analysées</b><span>Client Zéro ne lit que du texte. Il n'analyse jamais la voix, le visage ou l'humeur.</span></div>
+      <div><b>Données limitées</b><span>Échanges effacés après 30 jours, retours après 6 mois. Écris « INJUSTE » pour contester un retour.</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Client Zéro · projet étudiant L2 MIASHS (Université de Toulouse) · Ilias Bariol, Erevan Bernheim, Benjamin Pons.</p>
+    <p>FLAASH Sneakers est une entreprise fictive tirée d'une étude de cas. Agent construit avec <a href="https://botpress.com" target="_blank" rel="noopener">Botpress</a>.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
+<script>
+{
+  const scenarios = [
+    {code:'SC1', title:'Le client pressé', lvl:1, text:'Découvrir le besoin en deux questions, sans présenter tout le catalogue.'},
+    {code:'SC2', title:'Le client qui trouve ça cher', lvl:2, text:'Traiter l\'objection prix avec la valeur du produit, sans promettre de remise.'},
+    {code:'SC3', title:'Le modèle en rupture', lvl:2, text:'Proposer une solution claire quand la pointure manque en boutique.'},
+    {code:'SC4', title:'Le client qui veut personnaliser', lvl:2, text:'Expliquer les modèles personnalisables, le prix et le vrai délai.'},
+    {code:'SC5', title:'Le client mécontent', lvl:3, text:'Gérer un défaut avec calme, selon la politique de retour.'},
+    {code:'SC6', title:'Le client qui compare', lvl:3, text:'Argumenter avec des faits, sans jamais dénigrer un concurrent.'}
+  ];
+  const steps = [
+    ['Accueillir','Saluer dans les 30 secondes, sans se jeter sur le client.'],
+    ['Découvrir','2 ou 3 questions : usage, fréquence, pointure.'],
+    ['Proposer','2 modèles au maximum, liés au besoin.'],
+    ['Faire essayer','Proposer l\'essayage et demander le ressenti.'],
+    ['Traiter les objections','Reformuler, puis répondre avec un fait.'],
+    ['Conclure et fidéliser','Application de fidélité et entretien.']
+  ];
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  document.getElementById('grid6').innerHTML = scenarios.map(s =>
+    `<article class="tag"><span class="code">${esc(s.code)}</span><span class="lvl">Niveau ${s.lvl}</span><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p><button class="chip" type="button" data-sc="${esc(s.code)}">Lancer ce scénario</button></article>`).join('');
+  document.getElementById('quick').innerHTML = scenarios.map(s =>
+    `<button class="chip" type="button" data-sc="${esc(s.code)}">${esc(s.code)} · ${esc(s.title.replace(/^Le /,''))}</button>`).join('');
+  document.getElementById('method').innerHTML = steps.map(([b,t]) => `<li><b>${esc(b)}</b><span>${esc(t)}</span></li>`).join('');
+
+  const status = document.getElementById('status');
+  const say = t => { status.textContent = t; };
+  let ready = false;
+  let lastBot = '';
+
+  const findText = b => {
+    if (!b || typeof b !== 'object') return '';
+    if (typeof b.text === 'string') return b.text;
+    if (b.block) return findText(b.block);
+    if (Array.isArray(b.items)) return b.items.map(findText).filter(Boolean).join('\n');
+    return '';
+  };
+  const isFromUser = m => {
+    const me = window.botpress && window.botpress.user && window.botpress.user.id;
+    return !!me && m.authorId === me;
+  };
+  let collecting = false;
+
+  try {
+    window.botpress.on('webchat:ready', () => {
+      ready = true;
+      const fb = document.getElementById('fallback');
+      if (fb) fb.remove();
+    });
+    window.botpress.on('message', m => {
+      if (!m) return;
+      if (isFromUser(m)) { collecting = false; return; }
+      const t = findText(m.block || m.payload || m);
+      if (!t) return;
+      if (/Fin de la séance|Étapes suivies|3 conseils/i.test(t)) { lastBot = t; collecting = true; }
+      else if (collecting) { lastBot += '\n\n' + t; }
+    });
+    window.botpress.init({
+      botId: '9019dca6-df35-493b-88da-8eb83c09ff16',
+      clientId: 'b4ef9a5e-6e9a-4166-a93d-c086eebb89f8',
+      configuration: {
+        embeddedChatId: 'webchat',
+        version: 'v2',
+        botName: 'Client Zéro · FLAASH Sneakers',
+        botDescription: "Agent IA d'entraînement à la vente. Les clients joués sont fictifs.",
+        color: '#4b1a3c',
+        variant: 'solid',
+        headerVariant: 'solid',
+        themeMode: 'light',
+        fontFamily: 'inter',
+        radius: 3,
+        feedbackEnabled: false,
+        soundEnabled: false,
+        proactiveMessageEnabled: false,
+        conversationHistory: false,
+        homePageEnabled: false,
+        mainCardEnabled: false,
+        conversationStartersEnabled: false,
+        footer: '[⚡ by Botpress](https://botpress.com/?from=webchat)'
+      }
+    });
+  } catch (e) {
+    say("Le chat n'a pas pu se charger ici : utilise le lien « Ouvrir le chat dans un nouvel onglet ».");
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-sc]');
+    if (!b) return;
+    const msg = `Bonjour, je veux faire le scénario ${b.dataset.sc}.`;
+    document.getElementById('entrainement').scrollIntoView();
+    if (ready) {
+      try { window.botpress.sendMessage(msg); say(`Scénario ${b.dataset.sc} lancé.`); return; } catch (err) {}
+    }
+    say(`Écris dans le chat : « ${msg} »`);
+  });
+
+  const feedbackText = () => lastBot || '';
+  document.getElementById('sendMail').addEventListener('click', () => {
+    const to = document.getElementById('mail').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { say('Indique une adresse mail valide.'); return; }
+    const fb = feedbackText();
+    if (!fb) { say("Fais d'abord une séance jusqu'au retour (écris « FIN »), puis reviens ici."); return; }
+    const body = fb.length > 1800 ? fb.slice(0, 1800) + '…' : fb;
+    const href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent('Mon retour Client Zéro')}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+    say('Ton logiciel de mail s\'ouvre avec ton retour. Vérifie, puis envoie-le.');
+  });
+  document.getElementById('copy').addEventListener('click', async () => {
+    const fb = feedbackText();
+    if (!fb) { say("Pas encore de retour à copier : termine d'abord une séance."); return; }
+    try { await navigator.clipboard.writeText(fb); say('Retour copié.'); }
+    catch (e) { say('Copie impossible ici : sélectionne le retour dans le chat et copie-le.'); }
+  });
+}
+</script>
+</body>
+</html>
